@@ -99,13 +99,13 @@ class TcpServer(Node):
         while True:
             tcp_server.listen(self.connections)
 
-            try:
+            try:                
+                (conn, (ip, port)) = tcp_server.accept()
                 # 最速設定を行う
                 conn.setsockopt(socket.IPPROT_TCP, socket.TCP_NODELAY, 1)
                 conn.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024)
                 conn.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1024)
-                
-                (conn, (ip, port)) = tcp_server.accept()
+
                 ClientThread(conn, self, ip, port).start()
             except socket.timeout as err:
                 self.logerr("ros_tcp_endpoint.TcpServer: socket timeout")
