@@ -181,6 +181,13 @@ class UnityTcpSender:
             while not halt_event.is_set():
                 try:
                     item = local_queue.get(timeout=self.time_between_halt_checks)
+
+                    try:
+                        while not local_queue.empty():
+                            item = local_queue.get_nowait()
+                    except Empty:
+                        pass
+                    
                 except Empty:
                     # I'd like to just wait on the queue, but we also need to check occasionally for the connection being closed
                     # (otherwise the thread never terminates.)
